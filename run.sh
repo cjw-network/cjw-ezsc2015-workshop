@@ -6,6 +6,7 @@ read -p "... do you want it? <enter>"
 ( 
   git checkout cjw-ezsc2015-workshop &&
   git pull origin cjw-ezsc2015-workshop &&
+  git submodule foreach git pull &&
   sudo ln -sf ./vhost /etc/apache2/sites-enabled/ezmigration.conf &&
   sudo sh ./installation/run.sh
 )
