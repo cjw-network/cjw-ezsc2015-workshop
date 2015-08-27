@@ -1,0 +1,76 @@
+<VirtualHost *:80>
+    ServerName www.cjwpublish.com
+    ServerAlias www.cjwpublish.com.cjwpublish1411.ezsc 
+    ServerAlias www.cjwpublish.com.cjwpublish1411dev.ezsc 
+
+    DocumentRoot /var/www/summercamp/workshops/ezmigration/cjwpublish1411/web
+    DirectoryIndex index.php
+
+    # Enabled for Dev environment
+    # LogLevel debug
+
+    <Directory /var/www/summercamp/workshops/ezmigration/cjwpublish1411/web>
+        Options FollowSymLinks
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    <IfModule mod_php5.c>
+        php_admin_flag safe_mode Off
+        php_admin_value register_globals    0
+        php_value magic_quotes_gpc  0
+        php_value magic_quotes_runtime  0
+        php_value allow_call_time_pass_reference 0
+	php_value max_execution_time 180
+    </IfModule>
+
+    # Environment.
+    # Possible values: "prod" and "dev" out-of-the-box, other values possible with proper configuration
+    # Defaults to "prod" if omitted (uses SetEnvIf so value can be used in rewrite rules)
+    SetEnvIf Request_URI ".*" ENVIRONMENT=dev
+
+    <IfModule mod_rewrite.c>
+        RewriteEngine On
+
+        # Uncomment in FastCGI mode or when using PHP-FPM, to get basic auth working.
+        RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+        # Needed for ci testing, remove in prod.
+        RewriteCond %{REQUEST_URI} ^/php5-fcgi(.*)
+        RewriteRule . - [L]
+
+        RewriteRule ^/var/([^/]+/)?storage/images(-versioned)?/.* - [L]
+        RewriteRule ^/var/([^/]+/)?cache/(texttoimage|public)/.* - [L]
+        RewriteRule ^/design/[^/]+/(stylesheets|images|javascript|fonts)/.* - [L]
+        RewriteRule ^/share/icons/.* - [L]
+        RewriteRule ^/extension/[^/]+/design/[^/]+/(stylesheets|flash|images|lib|javascripts?)/.* - [L]
+        RewriteRule ^/packages/styles/.+/(stylesheets|images|javascript)/[^/]+/.* - [L]
+        RewriteRule ^/packages/styles/.+/thumbnail/.* - [L]
+        RewriteRule ^/var/storage/packages/.* - [L]
+
+        RewriteRule ^/favicon\.ico - [L]
+        #RewriteRule ^/favicon\.ico /design/standard/images/favicon.ico [L]
+        RewriteRule ^/design/standard/images/favicon\.ico - [L]
+
+        # Give direct access to robots.txt for use by crawlers (Google,
+        # Bing, Spammers..)
+        RewriteRule ^/robots\.txt - [L]
+
+        # Following rule is needed to correctly display assets from eZ Publish5 / Symfony bundles
+        RewriteRule ^/bundles/ - [L]
+
+        # Additional Assetic rules for environments different from dev,
+        # remember to run php ezpublish/console assetic:dump --env=prod
+        RewriteCond %{ENV:ENVIRONMENT} !^(dev)
+        RewriteRule ^/(css|js|font)/.*\.(css|js|otf|eot|ttf|svg|woff) - [L]
+
+	# sylius specific
+        RewriteRule ^/media/ - [L]
+        RewriteRule ^/assets/ - [L]
+
+        #RewriteRule .* /index_dev.php [L]
+
+        RewriteRule .* /index.php
+    </IfModule>
+
+</VirtualHost>
