@@ -6,7 +6,7 @@ read -p "... do you want it? <enter>"
 ( 
   git checkout &&
   git pull origin &&
-  git submodule foreach git pull &&
+  git submodule update --init --recursive &&
   sudo ln -sf ./vhost /etc/apache2/sites-enabled/ezmigration.conf &&
   sudo sh ./installation/run.sh
 )
