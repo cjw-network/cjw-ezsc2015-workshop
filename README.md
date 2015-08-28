@@ -34,3 +34,11 @@ Additional Info:
 
 * https://github.com/cjw-network/cjwpublish1411
 * https://github.com/cjw-network/CjwPublishToolsBundle
+
+---
+
+Private hint for safari users:
+
+_Checkout the useful safari extension, if you use non standard top-level-domains for testing or any other situations ;)_
+
+* https://github.com/dlampe/CjwAnySearchPlus-safari-extension
