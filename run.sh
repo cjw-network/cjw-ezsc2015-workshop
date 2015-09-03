@@ -8,6 +8,7 @@ read -p "... do you want it? <enter>"
   git pull origin &&
   git submodule update --init --recursive &&
   sudo ln -sf `readlink -f ./installation/vhost` /etc/apache2/sites-enabled/ezmigration.conf &&
+  sudo find -L /etc/apache2/sites-enabled/ -type l -delete 
   sudo sh ./installation/run.sh
 )
 
